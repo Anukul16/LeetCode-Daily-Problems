@@ -1,0 +1,68 @@
+class Solution {
+    public int shortestPathBinaryMatrix(int[][] grid) {
+        int n = grid.length;
+        int m = grid[0].length;
+
+        // Check if the start or end cell is blocked
+        if (grid[0][0] != 0 || grid[n - 1][m - 1] != 0)
+            return -1;
+
+        int[][] dist = new int[n][m];
+
+        // Initialize distances to infinity
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                dist[i][j] = Integer.MAX_VALUE;
+            }
+        }
+
+        // Set the distance of the start cell to 1
+        dist[0][0] = 1;
+
+        Queue<int[]> q = new LinkedList<>();
+        q.add(new int[]{0, 0, dist[0][0]});
+
+        int[][] dir = {{-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}, {-1, -1}};
+
+        // Perform BFS traversal
+        while (!q.isEmpty()) {
+            int[] temp = q.poll();
+            int r = temp[0];
+            int c = temp[1];
+            int dis = temp[2];
+
+            // Explore all possible neighboring cells
+            for (int i = 0; i < 8; i++) {
+                int nrow = r + dir[i][0];
+                int ncol = c + dir[i][1];
+
+                // Check if the neighboring cell is within the grid boundaries and is unblocked
+                if (nrow >= 0 && nrow < n && ncol >= 0 && ncol < m && grid[nrow][ncol] == 0) {
+                    // If the new distance is shorter, update the distance and enqueue the cell
+                    if (dis + 1 < dist[nrow][ncol]) {
+                        dist[nrow][ncol] = dis + 1;
+                        q.add(new int[]{nrow, ncol, dist[nrow][ncol]});
+                    }
+                }
+            }
+        }
+
+        // Check if a path to the destination exists, return the shortest distance if yes, otherwise return -1
+        return dist[n - 1][m - 1] != Integer.MAX_VALUE ? dist[n - 1][m - 1] : -1;
+    }
+}
+
+/*
+created a distance array and store maxvalue in it 
+But the first cell initialize with 1
+Created a queue of int[]
+inside queue we are putting row,col,dist
+Now iterate until the queue is empty and go for 8 direction 
+
+The condition should be like it not gonna have out of bound and yeah the ceil will be going must contain 0 
+
+Then check if 
+
+
+
+*/
