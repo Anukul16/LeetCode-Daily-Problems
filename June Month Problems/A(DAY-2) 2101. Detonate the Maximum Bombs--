@@ -1,3 +1,75 @@
+Appeaoch 1:
+-----------
+class Solution {
+    // Depth First Search (DFS) function to traverse the graph
+    public void dfs(int node, Set<Integer> visited, List<List<Integer>> adj) {
+        visited.add(node);
+        for (int it : adj.get(node)) {
+            if (!visited.contains(it)) {
+                dfs(it, visited, adj);
+            }
+        }
+    }
+    
+    // Function to calculate the maximum detonation count
+    public int maximumDetonation(int[][] bombs) {
+        int n = bombs.length;
+        List<List<Integer>> adj = new ArrayList<>();
+        
+        // Building the adjacency list representation of the graph
+        for (int i = 0; i < n; i++) {
+            adj.add(new ArrayList<>());
+            for (int j = 0; j < n; j++) {
+                if (i != j) {
+                    long x1 = bombs[i][0];
+                    long y1 = bombs[i][1];
+                    long r1 = bombs[i][2];
+
+                    long x2 = bombs[j][0];
+                    long y2 = bombs[j][1];
+                    long r2 = bombs[j][2];
+                    
+                    // Calculating the squared distance between two bomb centers
+                    // (Distance formula without square root)
+                    long distance = (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
+                    
+                    // Checking if the detonation of bomb i can reach bomb j
+                    // by comparing the squared distance with the squared range of bomb i
+                    if ((r1 * r1) >= distance) {
+                        adj.get(i).add(j);
+                    }
+                }
+            }
+        }
+
+        int res = 0;
+        Set<Integer> visited = new HashSet<>();
+        for (int i = 0; i < n; i++) {
+            // Perform DFS from each bomb to find the reachable bombs
+            dfs(i, visited, adj);
+            int cnt = visited.size();
+            res = Math.max(res, cnt);
+            visited.clear();
+        }
+        return res;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+Appeoach 2:
+==============
+
 class Solution {
     // Helper function for depth-first search (DFS)
     private void dfs(List<List<Integer>> gr, boolean[] visited, int[] c, int i) {
