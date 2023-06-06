@@ -1,0 +1,65 @@
+Approach 1: TC--> O(N) SC--> O(N)
+----------------------------------
+class Solution {
+    public boolean canMakeArithmeticProgression(int[] arr) {
+        int n=arr.length;
+        /*
+        We know that arithmetic progression goes like -> 
+                            a,a+d,a+2d...a+(n-1)d
+            where a+(n-1)d is the maximum and a is the minimum
+        */
+        int min=arr[0];
+        int max=arr[0];
+        Set<Integer>set=new HashSet<>();
+        for(int i=0;i<n;i++){
+            min=Math.min(min,arr[i]);
+            max=Math.max(max,arr[i]);
+            set.add(arr[i]);
+        }
+        /*
+            so we have -> a+(n-1)d=max
+                          a+(none)=min
+            => So from here if we find d then -> 
+                => (n-1)d=max-min
+                => d=(max-min)/(n-1)
+        */
+        // suppose a testcase [0,0,0,0]
+        if(max-min==0)return true;
+        // if d is fraction then it is not arithmetic progression
+        if( (max-min) % (n-1) !=0)return false;
+
+        int d=(max-min)/(n-1); 
+        
+        for(int i=0;i<n;i++){
+            // to find a+d,a+2d...here a=min,i is the number 
+            int res=min+i*d;
+            if(!set.contains(res))return false;
+            // else set.remove(res);
+        }
+        return true;
+        
+        
+    }
+}
+
+
+
+
+
+Approach 2:  TC-->O(NLOGN)+O(N)  SC--> O(1)
+------------------------------------------
+class Solution {
+    public boolean canMakeArithmeticProgression(int[] arr) {
+        int n=arr.length;
+        int diff=0;
+        Arrays.sort(arr);
+        for(int i=0;i<n-1;i++){
+            if(i!=0){
+                if(diff!=Math.abs(arr[i]-arr[i+1]))return false;
+            }
+            diff=Math.abs(arr[i]-arr[i+1]);
+            
+        }
+        return true;
+    }
+}
