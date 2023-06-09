@@ -1,0 +1,94 @@
+Approach 1:   TC-->O(MN)
+-------------------------
+class Solution {
+    public int countNegatives(int[][] grid) {
+        int m=grid.length;
+        int n=grid[0].length;
+        int count=0;
+
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(grid[i][j]<0){
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+Approach 2:     TC-->O(NLOGN)
+-----------------------------
+class Solution {
+    public int countNegatives(int[][] grid) {
+        int ans = 0;
+        // Iterate over each row in the grid
+        for (int a[] : grid) {
+            // Count the number of negative numbers in the current row
+            ans += a.length - binarySearch(a);
+        }
+        return ans;
+    }
+    
+    // Perform binary search to find the index of the first negative number
+    int binarySearch(int[] arr) {
+        int l = 0;
+        int r = arr.length - 1;
+        while (l <= r) {
+            int mid = l + (r - l) / 2;
+            // If the middle element is negative, search in the left half
+            if (arr[mid] < 0) {
+                r = mid - 1;
+            }
+            // If the middle element is non-negative, search in the right half
+            else if (arr[mid] >= 0) {
+                l = mid + 1;
+            }
+        }
+        // Return the index of the first positive number (or the length of the array)
+        return l;
+    }
+}
+
+
+
+
+
+
+Approach 3:     TC-->O(M+N)
+----------------------------
+class Solution {
+    public int countNegatives(int[][] grid) {
+        int n = grid.length; // Number of rows in the grid
+        int m = grid[0].length; // Number of columns in the grid
+        int ans = 0; // Initialize the count of negative numbers to 0
+        
+        int i = n - 1; // Start from the bottom row
+        int j = 0; // Start from the leftmost column
+        
+        // Iterate until we reach the top row or the rightmost column
+        while (i >= 0 && j < m) {
+            // If the current element is non-negative, move to the next column
+            if (grid[i][j] >= 0) {
+                j++;
+            }
+            // If the current element is negative, increment the count by the number of elements in the current row
+            // from the current column to the end (m - j), and move to the next row
+            else if (grid[i][j] < 0) {
+                ans += m - j;
+                i--;
+            }
+        }
+        
+        return ans; // Return the count of negative numbers
+    }
+}
