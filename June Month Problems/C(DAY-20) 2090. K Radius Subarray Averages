@@ -1,0 +1,35 @@
+class Solution {
+    public int[] getAverages(int[] nums, int k) {
+        int n = nums.length;
+        long pSum[] = new long[n];  // Array to store prefix sums
+        long sum = 0;  // Variable to store the running sum
+
+        // Calculate prefix sums
+        for (int i = 0; i < n; i++) {
+            sum += nums[i];
+            pSum[i] = sum;
+        }
+
+        int i = 0, j = 0;  // Pointers to track the subarray
+        long prev = 0;  // Variable to store the sum of elements before the subarray
+        int idx = 0;  // Index for the resulting array
+
+        // Calculate k-radius averages for each subarray
+        while (j < n) {
+            if (j - i < k) {  // Less than k elements before the subarray
+                nums[idx++] = -1;  // Set the average to -1
+                j++;
+            } else if (j - i == k) {  // Exactly k elements in the subarray
+                if (j + k < n) {  // Check if there are k elements after the subarray
+                    nums[idx++] = (int) ((pSum[j + k] - prev) / (2 * k + 1));  // Calculate the average
+                    prev = pSum[i];  // Update the sum of elements before the subarray
+                } else {
+                    nums[idx++] = -1;  // Set the average to -1
+                }
+                j++;
+                i++;
+            }
+        }
+        return nums;  // Return the modified nums array
+    }
+}
