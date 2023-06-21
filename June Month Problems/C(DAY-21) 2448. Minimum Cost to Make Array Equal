@@ -1,0 +1,62 @@
+class Solution {
+    public long minCost(int[] nums, int[] cost) {
+        int min = Integer.MAX_VALUE;
+        int max = Integer.MIN_VALUE;
+
+        // Find the minimum and maximum values in nums
+        for (int x : nums) {
+            min = Math.min(min, x);
+            max = Math.max(max, x);
+        }
+
+        int l = min;
+        int r = max;
+        long ans = Integer.MAX_VALUE;
+
+        // Binary search to find the minimum cost
+        while (l <= r) {
+            int mid = l + (r - l) / 2;
+            long costForMid = findCost(mid, nums, cost);
+            long costForMidPlusOne = findCost(mid + 1, nums, cost);
+            
+            // Update the minimum cost
+            ans = Math.min(costForMid, costForMidPlusOne);
+
+            // Adjust the search range based on the cost comparison
+            if (costForMidPlusOne > costForMid) {
+                r = mid - 1;
+            } else {
+                l = mid + 1;
+            }
+        }
+
+        // If ans remains the same as Integer.MAX_VALUE, return 0; otherwise, return ans
+        return ans == Integer.MAX_VALUE ? 0 : ans;
+    }
+    
+    // Calculate the cost for a given mid value
+    public long findCost(int mid, int[] nums, int[] cost) {
+        long res = 0L;
+        for (int i = 0; i < nums.length; i++) {
+            // Calculate the absolute difference between mid and nums[i] and multiply it by cost[i]
+            res += (long) Math.abs(mid - nums[i]) * cost[i];
+        }
+        return res;
+    }
+}
+
+/*
+
+basically intuition hocche cost find korbo jeta min hobe seta return korbo.
+
+1) At first , find out the min and max from nums array
+
+2) Perform binary search, find out the mid and find the cost for the mid and for the mid + 1 value 
+
+3) After finding cost for the mid and mid+1 value , check which is minimum and add it to the answer .
+
+4) And here the main thing comes of this problem which is when to do left=mid+1 and when to do right=mid-1 ........So if cost of mid is less than the cost of mid + 1 value , then it means that we can not find a minimum cost if we do left=mid+1 , (look, suppose amar mid hocche 3 and ami 3 er cost pelam 8 and mid+1 means 4 tar cost pelam 30 ,,,so ekhane kono prosnoi noi j ami left=mid+1 korbo jehetu ami mid+1 e already ekta greater cost peyechi so ro jodi ami left ta barai tahole ro greater cost pabo )....... if cost of mid is greater than the cost of mid+1 value then we will go for left = mid +1 ( supposse amar mid 4 jetar cost pelam 40 and mid+1 means 5 jetar cost pelam 15 ..so ekhan theke bojha jacche ami jodi ro right er dike jai or left take barai tahole ro lower cost peter pari so ami left = mid + 1 korbo)
+
+
+
+*/
