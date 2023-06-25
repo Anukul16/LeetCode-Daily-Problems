@@ -1,22 +1,65 @@
+
 class Solution {
+    Integer dp[][]=new Integer[21][10003];
     public int tallestBillboard(int[] rods) {
-        int sum = 0;
-        for (int rod : rods) {
-            sum += rod;
-        }
-        int[][] dp = new int[rods.length + 1][sum + 1];
-        for (int i = 1; i <= rods.length; i++) {
-            for (int j = 0; j <= sum; j++) {
-                if (dp[i - 1][j] < j) {
-                    continue;
-                }
-                dp[i][j] = Math.max(dp[i][j], dp[i - 1][j]);
-                int k = j + rods[i - 1];
-                dp[i][k] = Math.max(dp[i][k], dp[i - 1][j] + rods[i - 1]);
-                k = Math.abs(j - rods[i - 1]);
-                dp[i][k] = Math.max(dp[i][k], dp[i - 1][j] + rods[i - 1]);
+        return solve(rods,0,0)/2;
+    }
+    int solve(int[]rods,int idx,int diff){
+        if(idx>=rods.length){
+            if(diff==0){
+                return 0;
             }
+            return Integer.MIN_VALUE;
         }
-        return dp[rods.length][0] / 2;
+        if(dp[idx][diff+5000] != null)return dp[idx][diff+5000];
+        int notTake=solve(rods,idx+1,diff);
+        int takeL1=rods[idx]+solve(rods,idx+1,diff+rods[idx]);
+        int takeL2=rods[idx]+solve(rods,idx+1,diff-rods[idx]);
+
+        return dp[idx][diff+5000]= Math.max(notTake,Math.max(takeL1,takeL2));
     }
 }
+
+/*
+
+In this problem we have to find to rods that have equal length so that we can install a billboard and the rods should have the maximum lengths
+
+If we write simple recurrence relation then it would be like, we have 3 options for each index ...like notTake to any rods of that index,or take the index for l1  and take the index for l2 
+
+like this :--                       
+        int takeForL1=fun(rods,idx+1,l1+rods[idx],l2);
+        int takeForL2=fun(rods,idx+1,l1,l2+rods[idx]);
+        int notTake=fun(rods,idx+1,l1,l2);
+
+        And when the index>=length of the array size we check if two rods have same size we return and in ans we return the maximum length
+        but this solution will give tle.
+        So if we think to memoize it then obviously we will think about 3d dp but when you try to implement this then it gives us memory limit exceeded. 
+
+            So what is the solution ->
+
+--->     we will memoize it by 2d dp ..we decrease the size by one by combining the l1 & l2 . 
+        so we will do it by finding the difference between l1 & l2 
+
+        Look---->   l1-l2=diff
+        now if we add numd[idx] with l1 then -->  (l1+nums[idx])-l2 if we simplify 
+                                            then--> (l1-l2)+nums[idx] here if you notice 
+                                                    (l1-l2) is diff so we can write 
+                                                    diff+nums[idx]
+
+        and if we add nums[idx] with l2 then --> l1-(l2+nums[idx]) if we simplify
+                                            then (l1-l2)-nums[idx] here also if you notice
+                                                (l1-l2) is diff so we can write 
+                                                diff-nums[idx]
+
+So here we are just calculating the difference but not checking the length ...so what we will do is that add the nums[idx] with that so that we can calculate the length
+
+Then we are finding this for three condition and returning the max.
+
+But if you carefully notice then you can see in main answer when we are returning ans we are doing ans/2 .But why this ?
+So it is because as we calulating the length of the rods and add the lengths so we will get the total length of rods 
+Suppos for this example nums=[1,2,1].... we will get the answer 4 but it answer should 2 ....So we are dividing 2 with it
+
+
+
+
+*/
