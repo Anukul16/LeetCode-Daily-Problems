@@ -1,0 +1,20 @@
+class Solution {
+    Integer[][]dp=new Integer[101][201];
+    int mod=(int)1e9+7;
+    public int countRoutes(int[] locations, int start, int finish, int fuel) {
+        return solve(locations,start,finish,fuel);
+    }
+    public int solve(int[]locations,int i,int finish,int fuel){
+        if(fuel<0)return 0;
+        if(dp[i][fuel] != null) return dp[i][fuel] % mod;
+        int ans=0;
+        if(i==finish)ans+=1 % mod;
+
+        for(int j=0;j<locations.length;j++){
+            if(i!=j){
+                ans=(ans+solve(locations,j,finish,fuel-Math.abs(locations[i]-locations[j]))) % mod;
+            }
+        }
+        return dp[i][fuel]=ans;
+    }
+}
