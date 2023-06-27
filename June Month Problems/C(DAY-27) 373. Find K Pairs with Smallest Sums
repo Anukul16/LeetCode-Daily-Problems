@@ -1,0 +1,35 @@
+class Trio{
+    int u;
+    int v;
+    int sum;
+    Trio(int u,int v,int sum){
+        this.u=u;
+        this.v=v;
+        this.sum=sum;
+    } 
+}
+class Solution {
+    public List<List<Integer>> kSmallestPairs(int[] nums1, int[] nums2, int k) 
+    {
+        List<List<Integer>>ans=new ArrayList<>();
+        PriorityQueue<Trio>pq=new PriorityQueue<>((a,b)->b.sum-a.sum);
+        for(int i=0;i<nums1.length;i++){
+            for(int j=0;j<nums2.length;j++){
+                int currSum=nums1[i]+nums2[j];
+                if(pq.size()<k){
+                    pq.add(new Trio(nums1[i],nums2[j],currSum));
+                }else if(currSum<pq.peek().sum){
+                    pq.poll();
+                    pq.add(new Trio(nums1[i],nums2[j],currSum));
+                }else{ // if the currSum is greater than the topSum then for sure for this i there will not be any j whose sum will be lesser than the topSum
+                    break;
+                }
+            }
+        }
+        while (k-- > 0 && !pq.isEmpty()) {
+            Trio x = pq.poll();
+            ans.add(new ArrayList<>(Arrays.asList(x.u, x.v)));
+        }
+        return ans;
+    }
+}
