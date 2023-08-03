@@ -1,0 +1,25 @@
+class Solution {
+    String pad[]={"","","abc","def","ghi","jkl","mno","pqrs","tuv","wxyz"};
+    public List<String> letterCombinations(String digits) {
+        List<String>ans=new ArrayList<>();
+        if (digits == null || digits.isEmpty()) {
+            return ans; 
+        }
+        StringBuilder sb=new StringBuilder();
+        solve(0,sb,digits,ans);
+        return ans;
+    }
+    public void solve(int idx,StringBuilder sb,String digits ,List<String>ans){
+        if(idx>=digits.length()){
+            ans.add(sb.toString());
+            return;
+        }
+        String s=pad[digits.charAt(idx)-'0'];
+        for(int i=0;i<s.length();i++){
+            sb.append(s.charAt(i));
+            solve(idx+1,sb,digits,ans);
+            sb.deleteCharAt(sb.length()-1);
+        }
+
+    }
+}
