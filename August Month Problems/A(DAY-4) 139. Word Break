@@ -1,0 +1,17 @@
+class Solution {
+    Boolean[]dp=new Boolean[301];
+    public boolean solve(int idx,String s,HashSet<String>set){
+        if(idx>=s.length())return true;
+        if(dp[idx]!=null)return dp[idx];
+        for(int i=idx;i<s.length();i++){
+            if(set.contains(s.substring(idx,i+1))){
+                if(solve(i+1,s,set))return dp[idx]= true;
+            }
+        }
+        return dp[idx]= false;
+    }
+    public boolean wordBreak(String s, List<String> wordDict) {
+        HashSet<String>set=new HashSet<>(wordDict);
+        return solve(0,s,set);
+    }
+}
